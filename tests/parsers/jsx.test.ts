@@ -460,4 +460,130 @@ describe("parseJsx", () => {
       expect(result.elements).toHaveLength(0);
     });
   });
+
+  describe("attribute detection for state requirements", () => {
+    test("detects disabled attribute (static)", () => {
+      const jsx = `<button disabled className="bg-gray-500">Submit</button>`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeDisabled).toBe(true);
+      expect(result.elements[0]!.hasConditionalDisabled).toBe(false);
+    });
+
+    test("detects disabled={true} as static", () => {
+      const jsx = `<button disabled={true} className="bg-gray-500">Submit</button>`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeDisabled).toBe(true);
+      expect(result.elements[0]!.hasConditionalDisabled).toBe(false);
+    });
+
+    test("detects disabled={isDisabled} as conditional", () => {
+      const jsx = `<button disabled={isDisabled} className="bg-gray-500">Submit</button>`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeDisabled).toBe(true);
+      expect(result.elements[0]!.hasConditionalDisabled).toBe(true);
+    });
+
+    test("detects disabled={loading || !valid} as conditional", () => {
+      const jsx = `<button disabled={loading || !valid} className="bg-gray-500">Submit</button>`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeDisabled).toBe(true);
+      expect(result.elements[0]!.hasConditionalDisabled).toBe(true);
+    });
+
+    test("detects required attribute", () => {
+      const jsx = `<input required className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("detects pattern attribute", () => {
+      const jsx = `<input pattern="[0-9]+" className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("detects min/max attributes", () => {
+      const jsx = `<input type="number" min={0} max={100} className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("detects minLength/maxLength attributes", () => {
+      const jsx = `<input minLength={3} maxLength={50} className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("detects placeholder attribute", () => {
+      const jsx = `<input placeholder="Enter name" className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.hasPlaceholder).toBe(true);
+    });
+
+    test("detects type=email implies validation", () => {
+      const jsx = `<input type="email" className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("detects type=url implies validation", () => {
+      const jsx = `<input type="url" className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("detects type=number implies validation", () => {
+      const jsx = `<input type="number" className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(true);
+    });
+
+    test("element without validation attributes has canBeInvalid=false", () => {
+      const jsx = `<input type="text" className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeInvalid).toBe(false);
+    });
+
+    test("element without placeholder has hasPlaceholder=false", () => {
+      const jsx = `<input className="border" />`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.hasPlaceholder).toBe(false);
+    });
+
+    test("element without disabled has canBeDisabled=false", () => {
+      const jsx = `<button className="bg-blue-500">Submit</button>`;
+      const result = parseJsx(jsx, "test.tsx");
+
+      expect(result.elements).toHaveLength(1);
+      expect(result.elements[0]!.canBeDisabled).toBe(false);
+    });
+  });
 });

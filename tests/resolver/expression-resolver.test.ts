@@ -242,6 +242,37 @@ describe("resolveExpression", () => {
 
       expect(result.isFullyResolved).toBe(false);
     });
+
+    test("resolves computed access with nested objects by collecting all strings", () => {
+      const expr = parseExpr("variants[size]");
+      const symbols = createSymbols([
+        [
+          "variants",
+          {
+            type: "object",
+            properties: new Map([
+              ["primary", { type: "string", value: "bg-blue-500" }],
+              [
+                "sizes",
+                {
+                  type: "object",
+                  properties: new Map([
+                    ["sm", { type: "string", value: "text-sm" }],
+                    ["lg", { type: "string", value: "text-lg" }],
+                  ]),
+                },
+              ],
+            ]),
+          },
+        ],
+      ]);
+      const result = resolveExpression(expr, symbols);
+
+      expect(result.isFullyResolved).toBe(true);
+      expect(result.resolvedValue).toContain("bg-blue-500");
+      expect(result.resolvedValue).toContain("text-sm");
+      expect(result.resolvedValue).toContain("text-lg");
+    });
   });
 
   describe("ConditionalExpression", () => {
