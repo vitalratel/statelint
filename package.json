@@ -4,7 +4,7 @@
   "description": "Static analysis CLI to audit interactive state coverage in CSS and Tailwind codebases",
   "type": "module",
   "bin": {
-    "statelint": "./dist/cli.js"
+    "statelint": "dist/cli.js"
   },
   "main": "./dist/cli.js",
   "exports": {

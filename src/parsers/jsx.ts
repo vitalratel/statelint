@@ -1,10 +1,10 @@
 // ABOUTME: JSX/TSX parser that extracts Tailwind state variants from className.
 // ABOUTME: Uses @babel/parser to parse JSX and detect hover:, focus:, etc.
 
+import type { SymbolTable } from "../resolver/index.ts";
 import type { InteractiveElement, StateName } from "../types.ts";
-import type { SymbolTable } from "./resolver.ts";
 import { parse } from "@babel/parser";
-import { buildSymbolTable, resolveExpression } from "./resolver.ts";
+import { buildSymbolTable, resolveExpression } from "../resolver/index.ts";
 import {
   extractStatesFromClassName,
   hasStateVariant,
