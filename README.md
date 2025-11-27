@@ -1,5 +1,9 @@
 # statelint
 
+[![CI](https://github.com/vitalratel/statelint/actions/workflows/ci.yml/badge.svg)](https://github.com/vitalratel/statelint/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/vitalratel/statelint/branch/master/graph/badge.svg)](https://codecov.io/gh/vitalratel/statelint)
+[![npm version](https://img.shields.io/npm/v/statelint.svg)](https://www.npmjs.com/package/statelint)
+
 Static analysis CLI that audits interactive state coverage in frontend codebases. Detects missing `:hover`, `:focus`, `:disabled`, and other states on buttons, links, and form controls.
 
 ## Why?
