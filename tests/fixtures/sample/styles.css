@@ -1,0 +1,7 @@
+.btn:hover {
+  background-color: blue;
+}
+
+.btn:focus {
+  outline: 2px solid blue;
+}
