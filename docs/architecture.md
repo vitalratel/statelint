@@ -43,19 +43,26 @@ statelint/
 │   ├── scanner.ts             # File discovery (fast-glob)
 │   ├── analyzer.ts            # State coverage analysis and reporting
 │   ├── types.ts               # Shared TypeScript types and defaults
-│   ├── parser.ts             # File-type dispatch to specific parsers
+│   ├── parser.ts              # File-type dispatch to specific parsers
 │   ├── parsers/
 │   │   ├── shared.ts          # Common constants (INTERACTIVE_TAGS, variants)
-│   │   ├── resolver.ts        # Same-file variable resolution for JSX
 │   │   ├── css.ts             # CSS pseudo-class extraction
 │   │   ├── jsx.ts             # JSX/TSX Tailwind variant detection
 │   │   ├── vue.ts             # Vue SFC parsing
 │   │   └── svelte.ts          # Svelte file parsing
+│   ├── resolver/              # Same-file variable resolution for JSX
+│   │   ├── index.ts           # Public API and orchestration
+│   │   ├── types.ts           # Resolver-specific types
+│   │   ├── symbol-table.ts    # Symbol table for tracking declarations
+│   │   ├── import-resolver.ts # Handles import statement resolution
+│   │   └── expression-resolver.ts # Resolves expressions to string values
 │   └── reporters/
 │       └── index.ts           # All output formatters (terminal, JSON, markdown, SARIF)
 ├── tests/
 │   ├── fixtures/              # Sample files for testing
+│   │   └── resolver/          # Resolver-specific test fixtures
 │   ├── parsers/               # Parser unit tests
+│   ├── resolver/              # Resolver unit tests
 │   ├── integration/           # End-to-end CLI tests
 │   ├── analyzer.test.ts
 │   ├── config.test.ts
@@ -412,6 +419,7 @@ Follows SARIF 2.1.0 schema for GitHub integration.
 ### Unit Tests
 
 - Each parser tested with inline fixtures (`tests/parsers/`)
+- Resolver modules tested independently (`tests/resolver/`)
 - Analyzer logic tested with mock parse results (`tests/analyzer.test.ts`)
 - Reporter output tested for all formats (`tests/reporters.test.ts`)
 - Config loading tested with temp files (`tests/config.test.ts`)
@@ -435,8 +443,6 @@ Optional Playwright-based analysis for:
 - CSS-in-JS codebases
 - Production site audits
 - Sites behind authentication
-
-See [Browser Mode Documentation](./browser-mode.md) for detailed architecture, workflow, and implementation approach.
 
 ### Watch Mode
 
